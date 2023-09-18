@@ -5,6 +5,7 @@ edition = "2021"
 license = "MIT OR Apache-2.0"
 keywords = ["mods", "skyrim", "fallout", "skyrim", "starfield"]
 repository = "https://github.com/luctius/fomod"
+description = "fomod is game-agnostic format for mod installers, written in xml. This crate can read fomod packages."
 
 [dependencies]
 quick-xml = {version ="0.30.0", features = ["serialize", "serde-types"]}
