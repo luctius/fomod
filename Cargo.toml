@@ -2,6 +2,7 @@
 name = "fomod"
 version = "0.1.0"
 edition = "2021"
+authors = ["Luctius Invictus"]
 license = "MIT OR Apache-2.0"
 keywords = ["mods", "skyrim", "fallout", "skyrim", "starfield"]
 repository = "https://github.com/luctius/fomod"
