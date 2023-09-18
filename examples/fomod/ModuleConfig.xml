@@ -1,0 +1,171 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:noNamespaceSchemaLocation="http://qconsulting.ca/fo3/ModConfig5.0.xsd">
+	<moduleName>StarUI Inventory</moduleName>
+	
+	<installSteps order="Explicit">
+	 
+	<installStep name="Select installation options">
+		<optionalFileGroups order="Explicit">
+			<group name="Main files" type="SelectAny">
+				<plugins order="Explicit">
+
+					<plugin name="StarUI Inventory">
+						<description>StarUI Inventory improves all inventory screens for use on a PC. Compact display style. More details in sortable columns. Item category icons. Category as left sidebar. Many quality of life features!</description>
+						<image path="fomod\images\StarUI Inventory Teaser.jpg" />
+						<files />
+						<typeDescriptor><type name="Required" /></typeDescriptor>
+					</plugin>
+				</plugins>
+			</group>
+
+			<group name="Mod Manager" type="SelectExactlyOne">
+				<plugins order='Explicit'>
+					<plugin name="Vortex">
+						<description>Select this if you use Vortex</description>
+						<image path="fomod\images\StarUI Inventory Teaser.jpg" />
+						<conditionFlags>
+							<flag name="flag_vortex">Active</flag>
+						</conditionFlags>
+						<files>
+							<folder source="Interface" destination="Data\Interface" />
+						</files>
+						<typeDescriptor><type name="Optional" /></typeDescriptor>
+					</plugin>
+					
+					<plugin name="Mod Organizer 2">
+						<description>Select this if you use Mod Organizer 2.</description>
+						<image path="fomod\images\StarUI Inventory Teaser.jpg" />
+						<conditionFlags>
+							<flag name="flag_mo2">Active</flag>
+						</conditionFlags>
+						<files>
+							<folder source="Interface" destination="Interface" />
+						</files>
+						<typeDescriptor><type name="Optional" /></typeDescriptor>
+					</plugin>
+				</plugins>
+			</group>
+
+
+			<group name="FPS (Frames Per Second)" type="SelectExactlyOne">
+				<plugins order='Explicit'>
+					<plugin name="30 FPS - Vanilla">
+						<description>Vanilla interface FPS. As like in the original game.</description>
+						<image path="fomod\images\StarUI Inventory Teaser.jpg" />
+						<conditionFlags>
+							<flag name="flag_30fps">Active</flag>
+						</conditionFlags>
+						<files />
+						<typeDescriptor><type name="Optional" /></typeDescriptor>
+					</plugin>
+					
+					<plugin name="60 FPS - Smooth and stable">
+						<description>Doubles the default interface FPS. Smoother and more responsive.</description>
+						<image path="fomod\images\StarUI Inventory Teaser.jpg" />
+						<conditionFlags>
+							<flag name="flag_60fps">Active</flag>
+						</conditionFlags>
+						<files />
+						<typeDescriptor><type name="Recommended" /></typeDescriptor>
+					</plugin>
+					
+					<plugin name="120 FPS - High-FPS (may cause crashes)">
+						<description>High-FPS version. This version needs an appropiate monitor to be used. &#xD;
+WARNING: Using 120FPS may cause the game to crash, as the game engine is not programmed for such high interface FPS rates.&#xD;
+&#xD;
+USE AT YOUR OWN RISK.&#xD;
+</description>
+						<image path="fomod\images\StarUI Inventory Teaser.jpg" />
+						<conditionFlags>
+							<flag name="flag_120fps">Active</flag>
+						</conditionFlags>
+						<files />
+						<typeDescriptor><type name="Optional" /></typeDescriptor>
+					</plugin>
+				</plugins>
+			</group>
+							
+		</optionalFileGroups>
+
+	</installStep>
+	
+	<installStep name="README">
+		<optionalFileGroups order="Explicit">
+			<group name="Please read the notes" type="SelectAny">
+				<plugins order="Explicit">
+					<plugin name="Requires Archive Invalidation">
+						<description>You will need to enable Archive Invalidation to load loose files.&#xD;
+If you haven't done that yet, see the mod page for detailed instructions.&#xD;</description>
+						<files />
+						<typeDescriptor>
+							<type name="Required" />
+						</typeDescriptor>
+					</plugin>
+								
+					<plugin name="INI: Settings, settings, settings">
+						<description>You can configure many different settings in the file Interface\StarUI Inventory.ini .&#xD;
+Every settings is described in the file, so you can easily adapt the whole mod to your liking.&#xD;</description>
+						<files />
+						<typeDescriptor>
+							<type name="Required" />
+						</typeDescriptor>
+					</plugin>
+					
+					<plugin name="Configuration done">
+						<description>Ready for installation.&#xD;
+If you are updating, make sure you have a backup of your StarUI Inventory.ini to keep your settings.&#xD;</description>
+						<files />
+						<typeDescriptor>
+							<type name="Required" />
+						</typeDescriptor>
+					</plugin>
+								
+				</plugins>
+			</group>
+		</optionalFileGroups>
+	</installStep>
+	</installSteps>
+	
+	<conditionalFileInstalls>
+		<patterns>
+			<pattern>
+				<dependencies operator="And">
+					<flagDependency flag="flag_vortex" value="Active" />
+					<flagDependency flag="flag_30fps" value="Active" />
+				</dependencies>
+				<files>
+					<folder source="Optional\30fps\Interface" destination="Data\Interface" />
+				</files>
+			</pattern>
+			<pattern>
+				<dependencies operator="And">
+					<flagDependency flag="flag_mo2" value="Active" />
+					<flagDependency flag="flag_30fps" value="Active" />
+				</dependencies>
+				<files>
+					<folder source="Optional\30fps\Interface" destination="Interface" />
+				</files>
+			</pattern>	
+			
+			<pattern>
+				<dependencies operator="And">
+					<flagDependency flag="flag_vortex" value="Active" />
+					<flagDependency flag="flag_120fps" value="Active" />
+				</dependencies>
+				<files>
+					<folder source="Optional\120fps\Interface" destination="Data\Interface" />
+				</files>
+			</pattern>
+			<pattern>
+				<dependencies operator="And">
+					<flagDependency flag="flag_mo2" value="Active" />
+					<flagDependency flag="flag_120fps" value="Active" />
+				</dependencies>
+				<files>
+					<folder source="Optional\120fps\Interface" destination="Interface" />
+				</files>
+			</pattern>
+		</patterns>
+	</conditionalFileInstalls>
+
+</config>
