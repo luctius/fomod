@@ -76,7 +76,7 @@ where
     }
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Dependency {
     File(FileDependency),
     Flag(FlagDependency),
@@ -98,7 +98,7 @@ impl From<crate::spec::types::CompositeDependency> for Dependency {
     }
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum DependencyOperator<T> {
     And(Vec<T>),
     Or(Vec<T>),
@@ -119,11 +119,30 @@ impl From<crate::spec::types::ModuleDependency> for DependencyOperator<Dependenc
     }
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum OrderEnum<T> {
     Ascending(Vec<T>),
     Explicit(Vec<T>),
     Descending(Vec<T>),
+}
+impl<T> OrderEnum<T>
+where
+    T: Ord,
+{
+    pub fn vec(&mut self) -> &Vec<T> {
+        match self {
+            Self::Ascending(v) => {
+                v.sort();
+                v
+            }
+            Self::Explicit(v) => v,
+            Self::Descending(v) => {
+                //FIXME Sort Descending
+                v.sort();
+                v
+            }
+        }
+    }
 }
 impl<T> Default for OrderEnum<T> {
     fn default() -> Self {
@@ -175,11 +194,21 @@ impl From<spec::types::PluginList> for OrderEnum<Plugin> {
     }
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct InstallStep {
     pub name: String,
     pub visible: Option<Dependency>,
     pub optional_file_groups: OrderEnum<Group>,
+}
+impl PartialOrd for InstallStep {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        self.name.as_str().partial_cmp(other.name.as_str())
+    }
+}
+impl Ord for InstallStep {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.name.as_str().cmp(other.name.as_str())
+    }
 }
 impl From<spec::types::InstallStep> for InstallStep {
     fn from(install_step: spec::types::InstallStep) -> Self {
@@ -191,7 +220,7 @@ impl From<spec::types::InstallStep> for InstallStep {
     }
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum GroupType<T> {
     SelectAtLeastOne(T),
     SelectAtMostOne(T),
@@ -214,7 +243,7 @@ impl From<(spec::types::GroupType, spec::types::PluginList)> for GroupType<Order
     }
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Group {
     pub name: String,
     pub plugins: GroupType<OrderEnum<Plugin>>,
@@ -227,8 +256,18 @@ impl From<spec::types::Group> for Group {
         }
     }
 }
+impl PartialOrd for Group {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        self.name.as_str().partial_cmp(other.name.as_str())
+    }
+}
+impl Ord for Group {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.name.as_str().cmp(other.name.as_str())
+    }
+}
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Plugin {
     pub name: String,
     pub description: String,
@@ -255,8 +294,18 @@ impl From<spec::types::Plugin> for Plugin {
         }
     }
 }
+impl PartialOrd for Plugin {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        self.name.as_str().partial_cmp(other.name.as_str())
+    }
+}
+impl Ord for Plugin {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.name.as_str().cmp(other.name.as_str())
+    }
+}
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum PluginTypeDescriptorEnum {
     DependencyType(Vec<DependencyPattern>),
     PluginType(PluginTypeEnum),
@@ -287,7 +336,7 @@ impl From<spec::types::PluginTypeDescriptor> for PluginTypeDescriptorEnum {
     }
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct DependencyPattern {
     pub dependencies: Dependency,
     pub typ: PluginTypeEnum,
@@ -301,7 +350,7 @@ impl From<spec::types::DependencyPattern> for DependencyPattern {
     }
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ConditionalInstallPattern {
     pub dependencies: Dependency,
     pub files: Vec<FileType>,
