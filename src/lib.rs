@@ -128,8 +128,25 @@ pub enum OrderEnum<T> {
 impl<T> OrderEnum<T>
 where
     T: Ord,
+    T: Clone,
 {
-    pub fn vec(&mut self) -> &Vec<T> {
+    pub fn vec_sorted(&self) -> Vec<T> {
+        match self {
+            Self::Ascending(v) => {
+                let mut v = v.clone();
+                v.sort();
+                v
+            }
+            Self::Explicit(v) => v.clone(),
+            Self::Descending(v) => {
+                //FIXME Sort Descending
+                let mut v = v.clone();
+                v.sort();
+                v
+            }
+        }
+    }
+    pub fn vec_sorted_mut(&mut self) -> &mut Vec<T> {
         match self {
             Self::Ascending(v) => {
                 v.sort();
