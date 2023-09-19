@@ -1,5 +1,11 @@
 pub mod types;
 
+use std::io::BufReader;
+
+use quick_xml::{
+    de::{from_reader, from_str},
+    DeError,
+};
 use serde::Deserialize;
 
 use types::{ConditionalFileInstallList, FileList, HeaderImage, ModuleDependency, StepList};
@@ -18,6 +24,23 @@ pub struct Info {
     pub website: Option<String>,
     #[serde(rename = "CategoryId")]
     pub category_id: Option<usize>,
+}
+impl TryFrom<&str> for Info {
+    type Error = DeError;
+
+    fn try_from(string: &str) -> Result<Self, Self::Error> {
+        from_str(string)
+    }
+}
+impl<T> TryFrom<BufReader<T>> for Info
+where
+    T: std::io::Read,
+{
+    type Error = DeError;
+
+    fn try_from(reader: BufReader<T>) -> Result<Self, Self::Error> {
+        from_reader(reader)
+    }
 }
 
 #[derive(Debug, Deserialize, PartialEq)]
@@ -39,4 +62,21 @@ pub struct Config {
 
     #[serde(rename = "conditionalFileInstalls")]
     pub conditional_file_installs: Option<ConditionalFileInstallList>,
+}
+impl TryFrom<&str> for Config {
+    type Error = DeError;
+
+    fn try_from(string: &str) -> Result<Self, Self::Error> {
+        from_str(string)
+    }
+}
+impl<T> TryFrom<BufReader<T>> for Config
+where
+    T: std::io::Read,
+{
+    type Error = DeError;
+
+    fn try_from(reader: BufReader<T>) -> Result<Self, Self::Error> {
+        from_reader(reader)
+    }
 }

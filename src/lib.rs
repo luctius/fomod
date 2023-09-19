@@ -2,10 +2,7 @@ pub mod spec;
 
 use std::io::BufReader;
 
-use quick_xml::{
-    de::{from_reader, from_str},
-    DeError,
-};
+use quick_xml::DeError;
 
 pub use crate::spec::{
     types::{
@@ -65,8 +62,7 @@ impl TryFrom<&str> for Config {
     type Error = DeError;
 
     fn try_from(string: &str) -> Result<Self, Self::Error> {
-        let config: SpecConfig = from_str(string)?;
-        Ok(Self::from(config))
+        Ok(Self::from(SpecConfig::try_from(string)?))
     }
 }
 impl<T> TryFrom<BufReader<T>> for Config
@@ -76,8 +72,7 @@ where
     type Error = DeError;
 
     fn try_from(reader: BufReader<T>) -> Result<Self, Self::Error> {
-        let config: SpecConfig = from_reader(reader)?;
-        Ok(Self::from(config))
+        Ok(Self::from(SpecConfig::try_from(reader)?))
     }
 }
 
