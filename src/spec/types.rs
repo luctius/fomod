@@ -1,6 +1,6 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Deserialize, PartialEq, Default)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, PartialEq, Default)]
 pub enum OrderEnum {
     #[default]
     Ascending,
@@ -8,7 +8,7 @@ pub enum OrderEnum {
     Descending,
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub enum PluginTypeEnum {
     Required,
     Optional,
@@ -17,19 +17,19 @@ pub enum PluginTypeEnum {
     CouldBeUsable,
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub struct PluginType {
     #[serde(rename = "@name")]
     pub name: PluginTypeEnum,
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub struct PluginTypeDescriptor {
     #[serde(rename = "$value")]
     pub value: PluginTypeDescriptorEnum,
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub enum PluginTypeDescriptorEnum {
     #[serde(rename = "dependencyType")]
     DependencyType(DependencyPluginType),
@@ -37,25 +37,25 @@ pub enum PluginTypeDescriptorEnum {
     PluginType(PluginType),
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub struct DependencyPluginType {
     pub default_type: PluginType,
     pub patterns: DependencyPatternList,
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub struct DependencyPatternList {
     pub pattern: Vec<DependencyPattern>,
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub struct DependencyPattern {
     pub dependencies: CompositeDependency,
     #[serde(rename = "type")]
     pub typ: PluginType,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Default)]
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Default)]
 pub struct StepList {
     #[serde(rename = "@order", default)]
     pub order: OrderEnum,
@@ -64,7 +64,7 @@ pub struct StepList {
     pub install_step: Vec<InstallStep>,
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub struct InstallStep {
     #[serde(rename = "@name")]
     pub name: String,
@@ -75,7 +75,7 @@ pub struct InstallStep {
     pub optional_file_groups: GroupList,
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub struct ModuleDependency {
     #[serde(rename = "@operator")]
     pub operator: DependencyOperator,
@@ -83,7 +83,7 @@ pub struct ModuleDependency {
     pub list: Vec<CompositeDependency>,
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub enum CompositeDependency {
     #[serde(rename = "fileDependency")]
     File(FileDependency),
@@ -97,7 +97,7 @@ pub enum CompositeDependency {
     Dependency(ModuleDependency),
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub struct FlagDependency {
     #[serde(rename = "@flag")]
     pub flag: String,
@@ -105,13 +105,13 @@ pub struct FlagDependency {
     pub value: String,
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub struct VersionDependency {
     #[serde(rename = "@version")]
     pub version: String,
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub struct FileDependency {
     #[serde(rename = "@file")]
     pub file_name: String,
@@ -119,26 +119,26 @@ pub struct FileDependency {
     pub state: DependencyState,
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub enum DependencyState {
     Active,
     Inactive,
     Missing,
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub enum DependencyOperator {
     And,
     Or,
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub struct FileList {
     #[serde(rename = "$value")]
-    pub list: Option<Vec<FileType>>,
+    pub list: Option<Vec<FileType>>, //FIXME?
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub enum FileListEnum {
     #[serde(rename = "file")]
     File(FileType),
@@ -146,7 +146,7 @@ pub enum FileListEnum {
     Folder(FolderType),
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub struct FileType {
     #[serde(rename = "@source")]
     pub source: String,
@@ -159,7 +159,7 @@ pub struct FileType {
     pub priority: Option<isize>,
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub struct FolderType {
     #[serde(rename = "@source")]
     pub source: String,
@@ -172,14 +172,14 @@ pub struct FolderType {
     pub priority: Option<isize>,
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub struct GroupList {
     #[serde(rename = "@order", default)]
     pub order: OrderEnum,
     pub group: Vec<Group>,
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub struct Group {
     #[serde(rename = "@name")]
     pub name: String,
@@ -190,7 +190,7 @@ pub struct Group {
     pub plugins: PluginList,
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub enum GroupType {
     SelectAtLeastOne,
     SelectAtMostOne,
@@ -199,7 +199,7 @@ pub enum GroupType {
     SelectAny,
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub struct PluginList {
     #[serde(rename = "@order", default)]
     pub order: OrderEnum,
@@ -207,7 +207,7 @@ pub struct PluginList {
     pub plugin: Vec<Plugin>,
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub struct Plugin {
     #[serde(rename = "@name")]
     pub name: String,
@@ -224,13 +224,13 @@ pub struct Plugin {
     pub type_descriptor: Option<PluginTypeDescriptor>,
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub struct Image {
     #[serde(rename = "@path")]
     pub path: String,
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub struct HeaderImage {
     #[serde(rename = "@path")]
     pub path: Option<String>,
@@ -241,12 +241,12 @@ pub struct HeaderImage {
     pub height: Option<isize>,
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub struct ConditionFlagList {
     pub flag: Vec<SetConditionFlag>,
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub struct SetConditionFlag {
     #[serde(rename = "@name")]
     pub name: String,
@@ -255,17 +255,17 @@ pub struct SetConditionFlag {
     pub flag_value: String,
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub struct ConditionalFileInstallList {
     pub patterns: ConditionalInstallPatternList,
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub struct ConditionalInstallPatternList {
     pub pattern: Vec<ConditionalInstallPattern>,
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
 pub struct ConditionalInstallPattern {
     pub dependencies: CompositeDependency,
     pub files: FileList,

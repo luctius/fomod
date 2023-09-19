@@ -1,6 +1,6 @@
 use std::{fs::File, io::Read};
 
-use fomod::spec::files::{Config, Info};
+use fomod::{spec::Config as SpecConfig, Config, Info};
 
 const FOMOD_INFO_PATH: &'static str = "./examples/fomod/info.xml";
 const FOMOD_MODULECONFIG_PATH: &'static str = "./examples/fomod/ModuleConfig.xml";
@@ -22,6 +22,9 @@ fn main() {
     let info: Info = quick_xml::de::from_str(&info).unwrap();
     dbg!(&info);
 
-    let config: Config = quick_xml::de::from_str(&config).unwrap();
+    let config: SpecConfig = quick_xml::de::from_str(&config).unwrap();
+    dbg!(&config);
+
+    let config: Config = Config::from(config);
     dbg!(&config);
 }
