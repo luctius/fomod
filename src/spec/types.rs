@@ -106,6 +106,14 @@ pub struct FlagDependency {
     #[serde(rename = "@value")]
     pub value: String,
 }
+impl From<SetConditionFlag> for FlagDependency {
+    fn from(scf: SetConditionFlag) -> Self {
+        Self {
+            flag: scf.name,
+            value: scf.flag_value,
+        }
+    }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct VersionDependency {

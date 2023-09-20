@@ -291,20 +291,38 @@ pub struct Plugin {
     pub image: Option<String>,
 
     pub files: Vec<FileTypeEnum>,
-    pub condition_flags: Vec<SetConditionFlag>,
+    pub condition_flags: Vec<FlagDependency>,
     pub type_descriptor: Option<PluginTypeDescriptorEnum>,
 }
 impl From<spec::types::Plugin> for Plugin {
     fn from(plugin: spec::types::Plugin) -> Self {
+        let mut condition_flags = Vec::with_capacity(
+            plugin
+                .condition_flags
+                .as_ref()
+                .map(|cfl| cfl.flag.len())
+                .unwrap_or_default(),
+        );
+
+        condition_flags.extend(
+            plugin
+                .condition_flags
+                .as_ref()
+                .map(|cfl| {
+                    cfl.flag
+                        .iter()
+                        .map(|f| FlagDependency::from(f.clone()))
+                        .collect::<Vec<_>>()
+                })
+                .unwrap_or_default(),
+        );
+
         Self {
             name: plugin.name,
             description: plugin.description,
             image: plugin.image.map(|i| i.path),
             files: plugin.files.map(|fl| fl.list).flatten().unwrap_or_default(),
-            condition_flags: plugin
-                .condition_flags
-                .map(|cfl| cfl.flag)
-                .unwrap_or_default(),
+            condition_flags,
             type_descriptor: plugin
                 .type_descriptor
                 .map(|td| PluginTypeDescriptorEnum::from(td)),
