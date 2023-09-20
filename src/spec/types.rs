@@ -137,32 +137,20 @@ pub enum DependencyOperator {
 #[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct FileList {
     #[serde(rename = "$value")]
-    pub list: Option<Vec<FileType>>, //FIXME?
+    // pub list: Option<Vec<FileType>>, //FIXME?
+    pub list: Option<Vec<FileTypeEnum>>, //FIXME?
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub enum FileListEnum {
+pub enum FileTypeEnum {
     #[serde(rename = "file")]
     File(FileType),
     #[serde(rename = "folder")]
-    Folder(FolderType),
+    Folder(FileType),
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct FileType {
-    #[serde(rename = "@source")]
-    pub source: String,
-    #[serde(rename = "@destination")]
-    pub destination: Option<String>,
-    #[serde(rename = "@alwaysInstall")]
-    pub always_install: Option<String>,
-    #[serde(rename = "@installIfUsable", default = "false_bool")]
-    pub install_if_usable: bool,
-    pub priority: Option<isize>,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct FolderType {
     #[serde(rename = "@source")]
     pub source: String,
     #[serde(rename = "@destination")]
