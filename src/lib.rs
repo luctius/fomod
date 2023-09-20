@@ -19,7 +19,7 @@ pub struct Config {
     pub module_name: String,
     pub module_image: Option<HeaderImage>,
     pub module_dependencies: Option<DependencyOperator<Dependency>>,
-    pub required_install_files: Vec<FileTypeEnum>,
+    pub required_install_files: FileList,
     pub install_steps: OrderEnum<InstallStep>,
     pub conditional_file_installs: Vec<ConditionalInstallPattern>,
 }
@@ -47,8 +47,7 @@ impl From<SpecConfig> for Config {
                 .map(|md| DependencyOperator::from(md)),
             required_install_files: spec
                 .required_install_files
-                .map(|rif| rif.list)
-                .flatten()
+                .map(|rif| FileList::from(rif))
                 .unwrap_or_default(),
             install_steps: spec
                 .install_steps
@@ -284,13 +283,21 @@ impl Ord for Group {
     }
 }
 
+#[derive(Clone, Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct FileList(pub Vec<FileTypeEnum>);
+impl From<spec::types::FileList> for FileList {
+    fn from(list: spec::types::FileList) -> Self {
+        Self(list.list.unwrap_or_default())
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Plugin {
     pub name: String,
     pub description: String,
     pub image: Option<String>,
 
-    pub files: Vec<FileTypeEnum>,
+    pub files: FileList,
     pub condition_flags: Vec<SetConditionFlag>,
     pub type_descriptor: Option<PluginTypeDescriptorEnum>,
 }
@@ -300,7 +307,7 @@ impl From<spec::types::Plugin> for Plugin {
             name: plugin.name,
             description: plugin.description,
             image: plugin.image.map(|i| i.path),
-            files: plugin.files.map(|fl| fl.list).flatten().unwrap_or_default(),
+            files: plugin.files.map(|f| FileList::from(f)).unwrap_or_default(),
             condition_flags: plugin
                 .condition_flags
                 .map(|cfl| cfl.flag)
@@ -370,13 +377,13 @@ impl From<spec::types::DependencyPattern> for DependencyPattern {
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ConditionalInstallPattern {
     pub dependencies: Dependency,
-    pub files: Vec<FileTypeEnum>,
+    pub files: FileList,
 }
 impl From<crate::spec::types::ConditionalInstallPattern> for ConditionalInstallPattern {
     fn from(spec: crate::spec::types::ConditionalInstallPattern) -> Self {
         Self {
             dependencies: Dependency::from(spec.dependencies),
-            files: spec.files.list.unwrap_or_default(),
+            files: FileList::from(spec.files),
         }
     }
 }
