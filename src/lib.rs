@@ -14,7 +14,7 @@ pub use crate::spec::{
 
 use crate::spec::Config as SpecConfig;
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Config {
     pub module_name: String,
     pub module_image: Option<HeaderImage>,
@@ -76,7 +76,7 @@ where
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Dependency {
     File(FileDependency),
     Flag(FlagDependency),
@@ -98,7 +98,7 @@ impl From<crate::spec::types::CompositeDependency> for Dependency {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum DependencyOperator<T> {
     And(Vec<T>),
     Or(Vec<T>),
@@ -119,7 +119,7 @@ impl From<crate::spec::types::ModuleDependency> for DependencyOperator<Dependenc
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum OrderEnum<T> {
     Ascending(Vec<T>),
     Explicit(Vec<T>),
@@ -211,7 +211,7 @@ impl From<spec::types::PluginList> for OrderEnum<Plugin> {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct InstallStep {
     pub name: String,
     pub visible: Option<Dependency>,
@@ -237,7 +237,7 @@ impl From<spec::types::InstallStep> for InstallStep {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum GroupType<T> {
     SelectAtLeastOne(T),
     SelectAtMostOne(T),
@@ -260,7 +260,7 @@ impl From<(spec::types::GroupType, spec::types::PluginList)> for GroupType<Order
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Group {
     pub name: String,
     pub plugins: GroupType<OrderEnum<Plugin>>,
@@ -284,7 +284,7 @@ impl Ord for Group {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Plugin {
     pub name: String,
     pub description: String,
@@ -322,7 +322,7 @@ impl Ord for Plugin {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum PluginTypeDescriptorEnum {
     DependencyType(Vec<DependencyPattern>),
     PluginType(PluginTypeEnum),
@@ -353,7 +353,7 @@ impl From<spec::types::PluginTypeDescriptor> for PluginTypeDescriptorEnum {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct DependencyPattern {
     pub dependencies: Dependency,
     pub typ: PluginTypeEnum,
@@ -367,7 +367,7 @@ impl From<spec::types::DependencyPattern> for DependencyPattern {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ConditionalInstallPattern {
     pub dependencies: Dependency,
     pub files: Vec<FileType>,
